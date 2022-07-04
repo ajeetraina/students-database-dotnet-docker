@@ -1,0 +1,19 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0 as build
+COPY ./multipleprojects.sln /src/multipleprojects.sln
+COPY ./web/myWebapp.csproj  /src/web/myWebapp.csproj
+COPY ./projectone/projectone.csproj  /src/projectone/projectone.csproj
+COPY ./projecttwo/projecttwo.csproj  /src/projecttwo/projecttwo.csproj
+
+WORKDIR /src
+RUN dotnet restore multipleprojects.sln
+
+COPY . .
+
+RUN dotnet build web/myWebApp.csproj -o /app
+RUN dotnet publish web/myWebApp.csproj -o /publish
+
+FROM mcr.microsoft.com/dotnet/runtime:6.0
+WORKDIR /app
+COPY --from=build /publish .
+EXPOSE 80
+CMD ["./myWebApp"]
