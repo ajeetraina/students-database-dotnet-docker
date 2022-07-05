@@ -1,0 +1,8 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+COPY *.csproj ./
+WORKDIR /src
+RUN dotnet build -o /app
+RUN dotnet publish -o /publish
+WORKDIR /app
+EXPOSE 80
+CMD ["./myWebApp"]
